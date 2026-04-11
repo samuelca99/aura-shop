@@ -67,7 +67,7 @@ const productos = data.records || [];
         const precio = fields["Precio en bolivianos"] || "Consultar";
         const tallas = fields["Tallas"] || "Única";
         // La nueva línea que lee el enlace directo de Postimages
-const img = fields["URL Imágenes"] || "https://via.placeholder.com/400?text=Aura+Shop";
+        const img = fields["Imágenes"] || "https://via.placeholder.com/400?text=Aura+Shop"; 
 
         const texto = `Hola Aura Shop! Me interesa:\n- *${nombre}*\n- Talla: ${tallas}\n- Precio: Bs. ${precio}\n¿Tienen stock?`;
         const linkWS = `https://wa.me/${miTelefono}?text=${encodeURIComponent(texto)}`;
