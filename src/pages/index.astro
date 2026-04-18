@@ -23,49 +23,79 @@ const productos = data.records || [];
     :root { --primary: #000000; --accent: #25D366; --bg: #f8fafc; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: #333; }
     
-    /* Cabecera y Buscador */
-    header { background: var(--primary); color: white; padding: 3rem 1rem 2rem; text-align: center; }
-    header h1 { margin: 0; font-size: 2.5rem; letter-spacing: 2px; }
-    .search-container { max-width: 600px; margin: -25px auto 2rem; padding: 0 1rem; position: relative; z-index: 10; }
-    .search-bar { width: 100%; padding: 15px 20px; font-size: 1.1rem; border: none; border-radius: 30px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); outline: none; box-sizing: border-box; }
-    .search-bar:focus { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); border: 2px solid var(--accent); }
+    /* --- Cabecera y Buscador Moderno --- */
+    .main-header { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      padding: 2rem 1rem 1.5rem 1rem; 
+      margin-bottom: 1rem; 
+    }
+    
+    .logo-container { 
+      margin-bottom: 1.5rem; 
+    }
+    
+    .logo-img { 
+      height: 90px; /* Ajusta este número si quieres el logo más grande o chico */
+      width: auto; 
+      object-fit: contain; 
+    }
+    
+    .search-container { 
+      width: 100%; 
+      max-width: 600px; 
+    }
+    
+    .search-input { 
+      width: 100%; 
+      padding: 15px 20px; 
+      font-size: 1.1rem; 
+      color: #333; 
+      border: 2px solid #e2e8f0; 
+      border-radius: 30px; 
+      outline: none; 
+      background-color: white; 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+      transition: all 0.3s ease; 
+      box-sizing: border-box; 
+    }
+    
+    .search-input:focus { 
+      border-color: var(--primary); 
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
+    }
 
-    /* Grilla de Productos */
+    /* --- Grilla de Productos --- */
     .container { max-width: 1200px; margin: 0 auto 4rem; padding: 0 1rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
     .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column; }
     .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
     .card img { width: 100%; height: 280px; object-fit: cover; }
     
-    /* Info de la Tarjeta */
+    /* --- Info de la Tarjeta --- */
     .info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
     .title { font-size: 1.2rem; font-weight: 700; margin: 0 0 0.5rem 0; text-transform: capitalize; }
     .price { font-size: 1.4rem; color: var(--accent); font-weight: 900; margin: 0 0 1rem 0; }
+    .desc { font-size: 0.9rem; color: #64748b; line-height: 1.4; margin-bottom: 1rem; }
     .tallas { font-size: 0.85rem; color: #64748b; margin-bottom: 1.5rem; background: #f1f5f9; padding: 5px 10px; border-radius: 8px; display: inline-block; }
     
-    /* Botón */
+    /* --- Botones y Mensajes --- */
     .btn-ws { background: var(--primary); color: white; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; transition: background 0.3s; margin-top: auto; }
     .btn-ws:hover { background: var(--accent); }
     .sin-resultados { text-align: center; grid-column: 1 / -1; color: #64748b; display: none; padding: 3rem; font-size: 1.2rem; }
-
-    .desc { 
-  font-size: 0.9rem; 
-  color: #64748b; 
-  line-height: 1.4; 
-  margin-bottom: 1rem; 
-}
-}
   </style>
 </head>
 <body>
-  <header>
-    <h1>AURA SHOP</h1>
-    <p>Estilo y exclusividad directa a tu puerta</p>
-  </header>
 
-  <div class="search-container">
-    <input type="text" id="buscador" class="search-bar" placeholder="🔍 Buscar perfumes, ropa, marcas..." />
-  </div>
+  <header class="main-header">
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/NG4fBT4k/logo.png" alt="Logo Aura Shop" class="logo-img" />
+    </div>
+    <div class="search-container">
+      <input type="text" id="buscador" class="search-input" placeholder="🔍 Buscar perfumes, ropa, marcas..." />
+    </div>
+  </header>
 
   <main class="container">
     <div class="grid" id="contenedor-productos">
@@ -75,14 +105,12 @@ const productos = data.records || [];
         const precio = fields["Precio en bolivianos"] || "Consultar";
         const tallas = fields["Tallas"] || "Única";
         const descripcion = fields["Descripción"] || "";
-        // La nueva línea que lee el enlace directo de Postimages
         const img = fields["Imágenes"] || "https://via.placeholder.com/400?text=Aura+Shop"; 
 
         const texto = `Hola Aura Shop! Me interesa:\n- *${nombre}*\n- Talla: ${tallas}\n- Precio: Bs. ${precio}\n¿Tienen stock?`;
         const linkWS = `https://wa.me/${miTelefono}?text=${encodeURIComponent(texto)}`;
 
         return (
-          // La clase 'producto-card' y el 'data-nombre' son clave para el buscador
           <div class="card producto-card" data-nombre={nombre.toLowerCase()}>
             <img src={img} alt={nombre} loading="lazy" />
             <div class="info">
@@ -112,18 +140,16 @@ const productos = data.records || [];
       let visibles = 0;
 
       tarjetas.forEach(tarjeta => {
-        // Leemos el nombre que guardamos en data-nombre
         const nombreProducto = tarjeta.getAttribute('data-nombre');
         
         if (nombreProducto.includes(textoBusqueda)) {
-          tarjeta.style.display = 'flex'; // Mostramos la tarjeta
+          tarjeta.style.display = 'flex'; 
           visibles++;
         } else {
-          tarjeta.style.display = 'none'; // Ocultamos la tarjeta
+          tarjeta.style.display = 'none'; 
         }
       });
 
-      // Si no hay ninguno visible, mostramos el mensaje de error
       if (visibles === 0) {
         mensajeVacio.style.display = 'block';
       } else {
