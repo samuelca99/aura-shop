@@ -29,7 +29,7 @@ const productos = data.records || [];
       flex-direction: column; 
       align-items: center; 
       padding: 2rem 1rem 1.5rem 1rem; 
-      margin-bottom: 1rem; 
+      margin-bottom: 0.5rem; /* Reduje el margen para acercar las categorías */
     }
     
     .logo-container { 
@@ -37,7 +37,7 @@ const productos = data.records || [];
     }
     
     .logo-img { 
-      height: 300px; /* Ajusta este número si quieres el logo más grande o chico */
+      height: 300px; 
       width: auto; 
       object-fit: contain; 
     }
@@ -64,6 +64,51 @@ const productos = data.records || [];
     .search-input:focus { 
       border-color: var(--primary); 
       box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
+    }
+
+    /* --- NUEVO: Categorías (Pills) --- */
+    .categories-wrapper { 
+      width: 100%; 
+      max-width: 1200px; 
+      margin: 0 auto 2rem auto; 
+      padding: 0 1rem; 
+      box-sizing: border-box; 
+    }
+    
+    .categories-container { 
+      display: flex; 
+      gap: 10px; 
+      overflow-x: auto; 
+      padding-bottom: 10px; 
+      scrollbar-width: none; /* Oculta barra en Firefox */ 
+    }
+    
+    .categories-container::-webkit-scrollbar { 
+      display: none; /* Oculta barra en Chrome/Safari */ 
+    }
+    
+    .category-pill { 
+      padding: 8px 20px; 
+      border: 1px solid #e2e8f0; 
+      background-color: white; 
+      border-radius: 50px; 
+      font-size: 0.95rem; 
+      font-weight: 600; 
+      color: #64748b; 
+      cursor: pointer; 
+      white-space: nowrap; 
+      transition: all 0.3s ease; 
+    }
+    
+    .category-pill:hover { 
+      border-color: var(--primary); 
+      color: var(--primary); 
+    }
+    
+    .category-pill.active { 
+      background-color: var(--primary); 
+      color: white; 
+      border-color: var(--primary); 
     }
 
     /* --- Grilla de Productos --- */
@@ -97,6 +142,16 @@ const productos = data.records || [];
     </div>
   </header>
 
+  <div class="categories-wrapper">
+    <div class="categories-container" id="contenedor-categorias">
+      <button class="category-pill active" data-categoria="todos">Todos</button>
+      <button class="category-pill" data-categoria="zapatillas">Zapatillas</button>
+      <button class="category-pill" data-categoria="perfumes">Perfumes</button>
+      <button class="category-pill" data-categoria="ropa">Ropa</button>
+      <button class="category-pill" data-categoria="accesorios">Accesorios</button>
+    </div>
+  </div>
+
   <main class="container">
     <div class="grid" id="contenedor-productos">
       {productos.map((prod) => {
@@ -106,12 +161,16 @@ const productos = data.records || [];
         const tallas = fields["Tallas"] || "Única";
         const descripcion = fields["Descripción"] || "";
         const img = fields["Imágenes"] || "https://via.placeholder.com/400?text=Aura+Shop"; 
+        
+        // AQUÍ LEEMOS LA COLUMNA CATEGORÍA DE TU AIRTABLE
+        const categoria = fields["Categoría"] || "otros";
 
         const texto = `Hola Aura Shop! Me interesa:\n- *${nombre}*\n- Talla: ${tallas}\n- Precio: Bs. ${precio}\n¿Tienen stock?`;
         const linkWS = `https://wa.me/${miTelefono}?text=${encodeURIComponent(texto)}`;
 
         return (
-          <div class="card producto-card" data-nombre={nombre.toLowerCase()}>
+          // AÑADIMOS data-categoria PARA QUE EL JS LO PUEDA FILTRAR
+          <div class="card producto-card" data-nombre={nombre.toLowerCase()} data-categoria={categoria.toLowerCase()}>
             <img src={img} alt={nombre} loading="lazy" />
             <div class="info">
               <h2 class="title">{nombre}</h2>
@@ -125,24 +184,31 @@ const productos = data.records || [];
       })}
       
       <div id="mensaje-vacio" class="sin-resultados">
-        No encontramos ningún producto con ese nombre 😔
+        No encontramos ningún producto con esos filtros 😔
       </div>
     </div>
   </main>
 
   <script>
     const inputBuscador = document.getElementById('buscador');
+    const botonesCategoria = document.querySelectorAll('.category-pill');
     const tarjetas = document.querySelectorAll('.producto-card');
     const mensajeVacio = document.getElementById('mensaje-vacio');
 
-    inputBuscador.addEventListener('input', (evento) => {
-      const textoBusqueda = evento.target.value.toLowerCase();
+    let textoBusquedaActual = "";
+    let categoriaActivaActual = "todos";
+
+    function filtrarProductos() {
       let visibles = 0;
 
       tarjetas.forEach(tarjeta => {
         const nombreProducto = tarjeta.getAttribute('data-nombre');
+        const categoriaProducto = tarjeta.getAttribute('data-categoria');
         
-        if (nombreProducto.includes(textoBusqueda)) {
+        const coincideTexto = nombreProducto.includes(textoBusquedaActual);
+        const coincideCategoria = (categoriaActivaActual === "todos") || (categoriaProducto === categoriaActivaActual);
+
+        if (coincideTexto && coincideCategoria) {
           tarjeta.style.display = 'flex'; 
           visibles++;
         } else {
@@ -150,11 +216,24 @@ const productos = data.records || [];
         }
       });
 
-      if (visibles === 0) {
-        mensajeVacio.style.display = 'block';
-      } else {
-        mensajeVacio.style.display = 'none';
-      }
+      mensajeVacio.style.display = visibles === 0 ? 'block' : 'none';
+    }
+
+    // Buscador
+    inputBuscador.addEventListener('input', (evento) => {
+      textoBusquedaActual = evento.target.value.toLowerCase();
+      filtrarProductos();
+    });
+
+    // Botones de Categoría
+    botonesCategoria.forEach(boton => {
+      boton.addEventListener('click', (evento) => {
+        botonesCategoria.forEach(b => b.classList.remove('active'));
+        evento.target.classList.add('active');
+        
+        categoriaActivaActual = evento.target.getAttribute('data-categoria');
+        filtrarProductos();
+      });
     });
   </script>
 </body>
