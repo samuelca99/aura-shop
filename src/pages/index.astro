@@ -3,7 +3,6 @@ const token = import.meta.env.AIRTABLE_TOKEN;
 const baseId = import.meta.env.AIRTABLE_BASE_ID;
 const tableName = import.meta.env.AIRTABLE_TABLE_NAME;
 
-// NO OLVIDES PONER TU NÚMERO AQUÍ
 const miTelefono = "59178706782"; 
 
 const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
@@ -25,7 +24,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     :root { --primary: #000000; --accent: #25D366; --bg: #f8fafc; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: #333; }
     
-    /* --- 1. CABECERA --- */
+    /* --- CABECERA --- */
     .main-header { display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 1.5rem 1rem; margin-bottom: 0; }
     .logo-container { margin-bottom: 1.5rem; }
     .logo-img { height: 300px; width: auto; object-fit: contain; }
@@ -33,18 +32,14 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     .search-input { width: 100%; padding: 15px 20px; font-size: 1.1rem; color: #333; border: 2px solid #e2e8f0; border-radius: 30px; outline: none; background-color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: all 0.3s ease; box-sizing: border-box; }
     .search-input:focus { border-color: var(--primary); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
 
-    /* --- 2. BANNER ESTRATÉGICO ANIMADO --- */
+    /* --- BANNER ANIMADO --- */
     .promo-banner { background-color: var(--primary); color: white; padding: 10px 0; overflow: hidden; white-space: nowrap; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
     .promo-content { display: inline-block; animation: scrollBanner 25s linear infinite; }
-    .promo-content:hover { animation-play-state: paused; /* Se pausa si el cliente pone el dedo encima */ }
+    .promo-content:hover { animation-play-state: paused; }
     .promo-item { display: inline-block; margin: 0 40px; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.5px; }
-    
-    @keyframes scrollBanner {
-      0% { transform: translateX(10%); }
-      100% { transform: translateX(-100%); }
-    }
+    @keyframes scrollBanner { 0% { transform: translateX(10%); } 100% { transform: translateX(-100%); } }
 
-    /* --- 3. CATEGORÍAS --- */
+    /* --- CATEGORÍAS --- */
     .categories-wrapper { width: 100%; max-width: 1200px; margin: 0 auto 2rem auto; padding: 0 1rem; box-sizing: border-box; }
     .categories-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
     .categories-container::-webkit-scrollbar { display: none; }
@@ -52,13 +47,23 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     .category-pill:hover { border-color: var(--primary); color: var(--primary); }
     .category-pill.active { background-color: var(--primary); color: white; border-color: var(--primary); }
 
-    /* --- 4. GRILLA --- */
+    /* --- GRILLA Y TARJETAS --- */
     .container { max-width: 1200px; margin: 0 auto 4rem; padding: 0 1rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
     .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column; }
     .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-    .card img { width: 100%; height: 280px; object-fit: cover; }
     
+    /* --- CARRUSEL DE IMÁGENES --- */
+    .carousel { position: relative; width: 100%; height: 280px; overflow: hidden; background: #f8fafc; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s ease-in-out; }
+    .slide.active { opacity: 1; z-index: 1; }
+    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); color: #000; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; opacity: 0; transition: opacity 0.3s, background 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .carousel:hover .carousel-btn { opacity: 1; }
+    .prev { left: 10px; }
+    .next { right: 10px; }
+    .carousel-btn:hover { background: rgba(255,255,255,0.95); }
+
+    /* --- INFO DEL PRODUCTO --- */
     .info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
     .title { font-size: 1.2rem; font-weight: 700; margin: 0 0 0.5rem 0; text-transform: capitalize; }
     .price { font-size: 1.4rem; color: var(--accent); font-weight: 900; margin: 0 0 1rem 0; }
@@ -69,7 +74,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     .btn-ws:hover { background: var(--accent); }
     .sin-resultados { text-align: center; grid-column: 1 / -1; color: #64748b; display: none; padding: 3rem; font-size: 1.2rem; }
 
-    /* --- 5. FOOTER OSCURO --- */
+    /* --- FOOTER --- */
     .site-footer { background-color: #0f172a; color: #f8fafc; padding: 4rem 1rem 2rem 1rem; margin-top: 4rem; }
     .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; }
     .footer-col h3 { color: white; font-size: 1.3rem; margin-bottom: 1.5rem; letter-spacing: 1px; }
@@ -96,7 +101,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
   <div class="promo-banner">
     <div class="promo-content">
       <span class="promo-item">🚚 Entregas seguras en todo Tarija</span>
-      <span class="promo-item">🏬 Retiro disponible en nuestra Tienda</span>
+      <span class="promo-item">🏬 Retiro disponible en nuestro Showroom</span>
       <span class="promo-item">✨ Garantía de autenticidad en cada producto</span>
       <span class="promo-item">💳 Aceptamos Pagos por QR y Transferencia</span>
     </div>
@@ -106,9 +111,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     <div class="categories-container" id="contenedor-categorias">
       <button class="category-pill active" data-categoria="todos">Todos</button>
       {categoriasUnicas.map((cat) => (
-        <button class="category-pill" data-categoria={cat.toLowerCase()}>
-          {cat}
-        </button>
+        <button class="category-pill" data-categoria={cat.toLowerCase()}>{cat}</button>
       ))}
     </div>
   </div>
@@ -121,15 +124,31 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
         const precio = fields["Precio en bolivianos"] || "Consultar";
         const tallas = fields["Tallas"] || "Única";
         const descripcion = fields["Descripción"] || "";
-        const img = fields["Imágenes"] || "https://via.placeholder.com/400?text=Aura+Shop"; 
         const categoria = fields["Categoría"] || "otros";
+        
+        // CÓDIGO NUEVO PARA EL CARRUSEL: Separamos los links por la coma
+        const imgField = fields["Imágenes"] || "https://via.placeholder.com/400?text=Aura+Shop";
+        const imagenesArray = imgField.split(',').map(url => url.trim());
 
         const texto = `Hola Aura Shop! Me interesa:\n- *${nombre}*\n- Talla: ${tallas}\n- Precio: Bs. ${precio}\n¿Tienen stock?`;
         const linkWS = `https://wa.me/${miTelefono}?text=${encodeURIComponent(texto)}`;
 
         return (
           <div class="card producto-card" data-nombre={nombre.toLowerCase()} data-categoria={categoria.toLowerCase()}>
-            <img src={img} alt={nombre} loading="lazy" />
+            
+            <div class="carousel">
+              {imagenesArray.map((url, index) => (
+                <img src={url} alt={nombre} loading="lazy" class={index === 0 ? "slide active" : "slide"} />
+              ))}
+              
+              {imagenesArray.length > 1 && (
+                <>
+                  <button class="carousel-btn prev" aria-label="Anterior">‹</button>
+                  <button class="carousel-btn next" aria-label="Siguiente">›</button>
+                </>
+              )}
+            </div>
+
             <div class="info">
               <h2 class="title">{nombre}</h2>
               <p class="price">Bs. {precio}</p>
@@ -168,7 +187,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
 
       <div class="footer-col">
         <h3>Ubicación</h3>
-        <p>📍 Tarija, Bolivia Centro Calle Ingavi entre Mendez y santa cruz Centro Comercia Guadalquivir caseta 31</p>
+        <p>📍 Tarija, Bolivia Calle Ingavi entre Mendez y Santa Cruz Centro Comercial Guadalquivir caseta 31</p>
         <div class="map-container">
           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d305.67178775448343!2d-64.72975639080423!3d-21.53407701966556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x940647313b6fc8a1%3A0x50662604cdb05aac!2sCentro%20comercial%20GUADALQUIVIR!5e1!3m2!1sen!2sbo!4v1776524150592!5m2!1sen!2sbo" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
