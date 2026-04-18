@@ -50,18 +50,22 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     /* --- GRILLA Y TARJETAS --- */
     .container { max-width: 1200px; margin: 0 auto 4rem; padding: 0 1rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
-    .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column; }
+    .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column; position: relative; }
     .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
     
-    /* --- CARRUSEL DE IMÁGENES --- */
-    .carousel { position: relative; width: 100%; height: 280px; overflow: hidden; background: #f8fafc; }
-    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s ease-in-out; }
-    .slide.active { opacity: 1; z-index: 1; }
-    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); color: #000; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; opacity: 0; transition: opacity 0.3s, background 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .carousel:hover .carousel-btn { opacity: 1; }
+    /* --- CARRUSEL DE IMÁGENES (REFORZADO) --- */
+    .carousel { position: relative; width: 100%; height: 320px; overflow: hidden; background: #eee; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s ease-in-out; z-index: 1; }
+    .slide.active { opacity: 1; z-index: 2; }
+    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; transition: 0.3s; }
+    .carousel-btn:hover { background: white; scale: 1.1; }
     .prev { left: 10px; }
     .next { right: 10px; }
-    .carousel-btn:hover { background: rgba(255,255,255,0.95); }
+
+    /* Puntos indicadores */
+    .dots-container { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 5px; z-index: 15; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); transition: 0.3s; }
+    .dot.active { background: white; width: 20px; border-radius: 4px; }
 
     /* --- INFO DEL PRODUCTO --- */
     .info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
@@ -82,8 +86,8 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     .social-links { display: flex; flex-direction: column; gap: 12px; }
     .social-links a { color: #94a3b8; text-decoration: none; display: flex; align-items: center; font-size: 1rem; transition: color 0.3s, transform 0.3s; }
     .social-links a:hover { color: white; transform: translateX(5px); }
-    .map-container { width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-    .map-container iframe { width: 100%; height: 220px; border: none; }
+    .map-container { width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); height: 220px; }
+    .map-container iframe { width: 100%; height: 100%; border: none; }
     .footer-bottom { text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #1e293b; color: #64748b; font-size: 0.85rem; }
   </style>
 </head>
@@ -101,7 +105,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
   <div class="promo-banner">
     <div class="promo-content">
       <span class="promo-item">🚚 Entregas seguras en todo Tarija</span>
-      <span class="promo-item">🏬 Retiro disponible en nuestro Showroom</span>
+      <span class="promo-item">🏬 Retiro en nuestra Tienda Física</span>
       <span class="promo-item">✨ Garantía de autenticidad en cada producto</span>
       <span class="promo-item">💳 Aceptamos Pagos por QR y Transferencia</span>
     </div>
@@ -126,7 +130,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
         const descripcion = fields["Descripción"] || "";
         const categoria = fields["Categoría"] || "otros";
         
-        // CÓDIGO NUEVO PARA EL CARRUSEL: Separamos los links por la coma
+        // Separamos los links por la coma
         const imgField = fields["Imágenes"] || "https://via.placeholder.com/400?text=Aura+Shop";
         const imagenesArray = imgField.split(',').map(url => url.trim());
 
@@ -145,6 +149,11 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
                 <>
                   <button class="carousel-btn prev" aria-label="Anterior">‹</button>
                   <button class="carousel-btn next" aria-label="Siguiente">›</button>
+                  <div class="dots-container">
+                    {imagenesArray.map((_, i) => (
+                      <div class={i === 0 ? "dot active" : "dot"}></div>
+                    ))}
+                  </div>
                 </>
               )}
             </div>
@@ -187,9 +196,9 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
 
       <div class="footer-col">
         <h3>Ubicación</h3>
-        <p>📍 Tarija, Bolivia Calle Ingavi entre Mendez y Santa Cruz Centro Comercial Guadalquivir caseta 31</p>
+        <p>📍 Tarija, Bolivia<br>Calle Ingavi entre Mendez y Santa Cruz<br>Centro Comercial Guadalquivir caseta 31</p>
         <div class="map-container">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d305.67178775448343!2d-64.72975639080423!3d-21.53407701966556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x940647313b6fc8a1%3A0x50662604cdb05aac!2sCentro%20comercial%20GUADALQUIVIR!5e1!3m2!1sen!2sbo!4v1776524150592!5m2!1sen!2sbo" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d118228.31826079093!2d-64.79373976326622!3d-21.5360341738596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94064be2b322f28b%3A0x9ff8e7b92bdcc68e!2sTarija%2C%20Bolivia!5e0!3m2!1ses!2s!4v1700000000000!5m2!1ses!2s2" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
       
@@ -201,47 +210,70 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
   </footer>
 
   <script>
-    const inputBuscador = document.getElementById('buscador');
-    const botonesCategoria = document.querySelectorAll('.category-pill');
-    const tarjetas = document.querySelectorAll('.producto-card');
+    // 1. Filtrado (Buscador + Categorías)
+    const buscador = document.getElementById('buscador');
+    const pills = document.querySelectorAll('.category-pill');
+    const cards = document.querySelectorAll('.producto-card');
     const mensajeVacio = document.getElementById('mensaje-vacio');
 
-    let textoBusquedaActual = "";
-    let categoriaActivaActual = "todos";
-
-    function filtrarProductos() {
+    function filtrar() {
+      const txt = buscador.value.toLowerCase();
+      // Verificamos si hay un botón activo antes de buscarlo (para evitar errores si no hay categorías)
+      const botonActivo = document.querySelector('.category-pill.active');
+      const activeCat = botonActivo ? botonActivo.dataset.categoria : 'todos';
       let visibles = 0;
-
-      tarjetas.forEach(tarjeta => {
-        const nombreProducto = tarjeta.getAttribute('data-nombre');
-        const categoriaProducto = tarjeta.getAttribute('data-categoria');
-        
-        const coincideTexto = nombreProducto.includes(textoBusquedaActual);
-        const coincideCategoria = (categoriaActivaActual === "todos") || (categoriaProducto === categoriaActivaActual);
-
-        if (coincideTexto && coincideCategoria) {
-          tarjeta.style.display = 'flex'; 
+      
+      cards.forEach(c => {
+        const matchTxt = c.dataset.nombre.includes(txt);
+        const matchCat = activeCat === 'todos' || c.dataset.categoria === activeCat;
+        if (matchTxt && matchCat) {
+          c.style.display = 'flex';
           visibles++;
         } else {
-          tarjeta.style.display = 'none'; 
+          c.style.display = 'none';
         }
       });
-
       mensajeVacio.style.display = visibles === 0 ? 'block' : 'none';
     }
 
-    inputBuscador.addEventListener('input', (evento) => {
-      textoBusquedaActual = evento.target.value.toLowerCase();
-      filtrarProductos();
+    buscador.addEventListener('input', filtrar);
+    pills.forEach(p => {
+      p.addEventListener('click', () => {
+        pills.forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        filtrar();
+      });
     });
 
-    botonesCategoria.forEach(boton => {
-      boton.addEventListener('click', (evento) => {
-        botonesCategoria.forEach(b => b.classList.remove('active'));
-        evento.target.classList.add('active');
-        
-        categoriaActivaActual = evento.target.getAttribute('data-categoria');
-        filtrarProductos();
+    // 2. Lógica del Carrusel REFORZADA (La que te faltaba copiar)
+    document.querySelectorAll('.carousel').forEach(car => {
+      const slides = car.querySelectorAll('.slide');
+      const dots = car.querySelectorAll('.dot');
+      const btnNext = car.querySelector('.next');
+      const btnPrev = car.querySelector('.prev');
+      let idx = 0;
+
+      if (!btnNext) return; // Si solo hay 1 imagen, no ejecuta esto
+
+      function update() {
+        slides.forEach((s, i) => {
+          s.classList.remove('active');
+          if(dots[i]) dots[i].classList.remove('active');
+        });
+        slides[idx].classList.add('active');
+        if(dots[idx]) dots[idx].classList.add('active');
+      }
+
+      btnNext.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita clics fantasma
+        idx = (idx + 1) % slides.length;
+        update();
+      });
+
+      btnPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        idx = (idx - 1 + slides.length) % slides.length;
+        update();
       });
     });
   </script>
