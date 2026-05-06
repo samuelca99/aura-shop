@@ -55,7 +55,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
     
     /* --- CARRUSEL DE IMÁGENES (REFORZADO) --- */
     .carousel { position: relative; width: 100%; height: 320px; overflow: hidden; background: #eee; }
-    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s ease-in-out; z-index: 1; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.4s ease-in-out; z-index: 1; }
     .slide.active { opacity: 1; z-index: 2; }
     .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; transition: 0.3s; }
     .carousel-btn:hover { background: white; scale: 1.1; }
@@ -105,7 +105,7 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
   <div class="promo-banner">
     <div class="promo-content">
       <span class="promo-item">🚚 Entregas seguras en todo Tarija</span>
-      <span class="promo-item">🏬 Retiro en nuestra Tienda Física</span>
+      <span class="promo-item">🏬 Tienda Física Próximamente</span>
       <span class="promo-item">✨ Garantía de autenticidad en cada producto</span>
       <span class="promo-item">💳 Aceptamos Pagos por QR y Transferencia</span>
     </div>
@@ -196,9 +196,12 @@ const categoriasUnicas = [...new Set(productos.map(p => p.fields["Categoría"] |
 
       <div class="footer-col">
         <h3>Ubicación</h3>
-        <p>📍 Tarija, Bolivia<br>Calle Ingavi entre Mendez y Santa Cruz<br>Centro Comercial Guadalquivir caseta 31</p>
-        <div class="map-container">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d463.31188468653164!2d-64.73007960618628!3d-21.534044565135634!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x940647313b6fc8a1%3A0x50662604cdb05aac!2sCentro%20comercial%20GUADALQUIVIR!5e1!3m2!1ses-419!2sbo!4v1776530155882!5m2!1ses-419!2sbo" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <p>📍 Tarija, Bolivia</p>
+        <div class="map-container" style="background-color: #1e293b; display: flex; align-items: center; justify-content: center; padding: 2rem; text-align: center; border: 2px dashed #475569;">
+          <p style="margin: 0; color: #cbd5e1; font-size: 1.1rem; line-height: 1.6;">
+            <strong>🚧 Tienda física próximamente 🚧</strong><br><br>
+            Actualmente operamos 100% online con entregas rápidas y seguras a domicilio.
+          </p>
         </div>
       </div>
       
